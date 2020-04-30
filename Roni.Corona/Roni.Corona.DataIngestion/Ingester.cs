@@ -33,15 +33,15 @@ namespace Roni.Corona.DataIngestion
 
         public async Task CheckForUpdates()
         {
-            var lastUpdated = _service.GetLastUpdated();
+            DateTime lastUpdated = _service.GetLastUpdated();
 
             if (lastUpdated.Date < DateTime.Now.Date)
             {
-                var newContent = await _integration.GetNewContent(lastUpdated);
+                Dictionary< DateTime, string > newContent = await _integration.GetNewContent(lastUpdated);
                 
-                foreach (var keyValuePair in newContent)
+                foreach (KeyValuePair< DateTime, string > keyValuePair in newContent)
                 {
-                    var cases = MapStringToMultipleCases(keyValuePair.Value, keyValuePair.Key);
+                    IEnumerable< Cases > cases = MapStringToMultipleCases(keyValuePair.Value, keyValuePair.Key);
                     await UpdateAsync(cases);
                     _logger.Log(LogLevel.Information, $"Successfully ingested {keyValuePair.Key}");
                 }
@@ -51,18 +51,12 @@ namespace Roni.Corona.DataIngestion
 
         private IEnumerable<Cases> MapStringToMultipleCases(string content, DateTime date)
         {
-            IList<Cases> cases = new List<Cases>();
+            string[] lines = content.Split(Environment.NewLine).Skip(1).ToArray();
 
-            var lines = content.Split(Environment.NewLine).Skip(1).ToArray();
-
-            foreach (var line in lines)
-            {
-                var mappedCases = date.Date >= _newDate.Date
-                    ? MapStringToCases(_newIndices, line, date)
-                    : MapStringToCases(_oldIndices, line, date);
-
-                 cases.Add(mappedCases);    
-            }
+            IList<Cases> cases = lines.Select(line => date.Date >= _newDate.Date
+                                                  ? MapStringToCases(_newIndices, line, date)
+                                                  : MapStringToCases(_oldIndices, line, date))
+                                      .ToList();
 
             return cases.Where(x => x!=null);
         }
@@ -71,23 +65,32 @@ namespace Roni.Corona.DataIngestion
         {
             if (string.IsNullOrEmpty(content)) return null;
 
-            var cells = content.Split(",");
-
-            var confirmed = cells[indices[3]].ParseToInt();
-            var deaths = cells[indices[4]].ParseToInt();
-            var recovered = cells[indices[5]].ParseToInt();
-
-            var isDateParsed = DateTime.TryParseExact(cells[indices[2]], "d/MM/yyyy HH:mm", null,DateTimeStyles.AllowWhiteSpaces, out var lastDate);
-            if (!isDateParsed) lastDate = date;
+            string[] cells = content.Split(",");
             
-            return new Cases()
+            bool isDateParsed = DateTime.TryParseExact(cells[indices[2]], "d/MM/yyyy HH:mm", null,DateTimeStyles.AllowWhiteSpaces, out DateTime lastDate);
+            if (!isDateParsed) lastDate = date;
+
+            // Proper use of TryParse because if it's not a number, then use last return statement
+            if (int.TryParse(cells[ indices[ 0 ] ], out int fips)) {
+                return new Cases {
+                    State = cells[ indices[ 2 ] ],
+                    Country = cells[ indices[ 3 ] ],
+                    LastUpdated = DateTime.Parse(cells[ indices[ 4 ] ]),
+                    Confirmed = cells[ indices[ 7 ] ].ParseToInt(),
+                    Death = cells[ indices[ 8 ] ].ParseToInt(),
+                    Recovered = cells[ indices[ 9 ] ].ParseToInt(),
+                    Date = date
+                };
+            }
+
+            return new Cases
             {
                 State = cells[indices[0]],
                 Country = cells[indices[1]],
                 LastUpdated = lastDate,
-                Confirmed = confirmed,
-                Death = deaths,
-                Recovered = recovered,
+                Confirmed = cells[ indices[ 3 ] ].ParseToInt(),
+                Death = cells[ indices[ 4 ] ].ParseToInt(),
+                Recovered = cells[ indices[ 5 ] ].ParseToInt(),
                 Date = date
             };
         }
