@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.Extensions.Logging;
 using Roni.Corona.DataIngestion.Integrations;
 using Roni.Corona.Persistence.Entities;
 using Roni.Corona.Services;
+using Roni.Corona.Shared;
 
 namespace Roni.Corona.DataIngestion
 {
@@ -15,16 +17,17 @@ namespace Roni.Corona.DataIngestion
         private readonly ICoronaIntegration _integration;
         private readonly ICoronaService _service;
         private readonly ILogger<Ingester> _logger;
+        private readonly IMapper _mapper;
 
-        private int _intervalInMinutes = 60;
+        private readonly int _intervalInMinutes = 60;
 
 
         // From 22nd of march, the indexes have changed..
-        private DateTime _newDate = new DateTime(2020,3,22);
-        private int[] _oldIndices = { 0,1,2,3,4,5};
-        private int[] _newIndices = { 2,3,4,7,8,9};
+        private readonly DateTime _newDate = new DateTime(2020,3,22);
+        private readonly int[] _oldIndices = { 0,1,2,3,4,5};
+        private readonly int[] _newIndices = { 2,3,4,7,8,9};
         
-        internal Ingester(ICoronaIntegration integration, ICoronaService service, ILogger<Ingester> logger)
+        internal Ingester(ICoronaIntegration integration, ICoronaService service, ILogger<Ingester> logger, IMapper mapper)
         {
             _integration = integration;
             _service = service;
@@ -94,7 +97,7 @@ namespace Roni.Corona.DataIngestion
 
         private async Task UpdateAsync(IEnumerable<Cases> data)
         {
-            await _service.InsertAsync(data);
+            await _service.InsertAsync(_mapper.Map<IEnumerable<Cases>, IEnumerable<CaseReport>>(data));
         }
     }
 }

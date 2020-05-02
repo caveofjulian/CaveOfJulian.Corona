@@ -1,10 +1,13 @@
 ﻿using System.Net.Http;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Roni.Corona.DataIngestion.Integrations;
 using Roni.Corona.Persistence;
+using Roni.Corona.Persistence.Entities;
 using Roni.Corona.Services;
+using Roni.Corona.Shared;
 
 namespace Roni.Corona.DataIngestion
 {
@@ -20,8 +23,12 @@ namespace Roni.Corona.DataIngestion
             optionsBuilder.UseSqlServer(connectionString);
 
             var context = new RoniContext(optionsBuilder.Options);
-            var service = new CoronaService(new CoronaCasesRepository<Roni.Corona.Persistence.Entities.Cases>(context));
-            var ingester = new Ingester(integration, service, logger);
+            
+            var config = new MapperConfiguration(config => config.CreateMap<Cases, CaseReport>());
+            var mapper = new Mapper(config);
+            
+            var service = new CoronaService(new CoronaCasesRepository<Roni.Corona.Persistence.Entities.Cases>(context), mapper);
+            var ingester = new Ingester(integration, service, logger, mapper);
 
             await ingester.CheckForUpdates();
         }
