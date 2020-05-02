@@ -14,9 +14,9 @@ namespace Roni.Corona.Services
     {
 
         private readonly ICoronaCasesRepository<Cases> _coronaRepository;
-        private readonly Mapper _mapper;
+        private readonly IMapper _mapper;
 
-        public CoronaService(ICoronaCasesRepository<Cases> coronaRepository, Mapper mapper)
+        public CoronaService(ICoronaCasesRepository<Cases> coronaRepository, IMapper mapper)
         {
             _coronaRepository = coronaRepository;
             _mapper = mapper;

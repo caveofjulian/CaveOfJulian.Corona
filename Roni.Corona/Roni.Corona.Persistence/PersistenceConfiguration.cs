@@ -5,7 +5,7 @@ using Roni.Corona.Shared;
 
 namespace Roni.Corona.Persistence
 {
-    public static class ServicesConfiguration
+    public static class PersistenceConfiguration
     {
         public static void ConfigurePersistenceServices(this IServiceCollection collection, string connectionString)
         {

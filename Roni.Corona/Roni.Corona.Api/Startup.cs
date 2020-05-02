@@ -38,6 +38,7 @@ namespace Roni.Corona.Api
             services.AddTransient<ICoronaService, CoronaService>();
             services.AddSingleton<ILogger<CoronaController>, Logger<CoronaController>>();
             services.ConfigurePersistenceServices(Configuration.GetConnectionString("RoniDb"));
+            services.ConfigureServices();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

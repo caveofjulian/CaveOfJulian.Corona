@@ -44,7 +44,7 @@ namespace Roni.Corona.Api.Controllers
             }
         }
 
-        private IEnumerable<Cases> GetCases(CoronaParameters parameters)
+        private IEnumerable<CaseReport> GetCases(CoronaParameters parameters)
         {
             // Please stick to a chain of conditions like this so its very explicit. 
             if (parameters.Date == null && parameters.BeginDate == null && parameters.EndDate == null)
