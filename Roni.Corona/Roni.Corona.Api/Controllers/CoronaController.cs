@@ -19,7 +19,7 @@ namespace Roni.Corona.Api.Controllers
         private readonly ICoronaService _service;
         private readonly ILogger _logger;
 
-        public CoronaController(ICoronaService service, ILogger<CoronaController> logger)
+        public CoronaController(ICoronaService service, ILogger logger)
         {
             _service = service;
             _logger = logger;

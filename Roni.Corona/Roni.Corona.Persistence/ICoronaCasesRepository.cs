@@ -16,5 +16,6 @@ namespace Roni.Corona.Persistence
 
         void Insert(IEnumerable<TEntity> entity);
         Task InsertAsync(IEnumerable<TEntity> entity);
+        Task SaveAsync();
     }
 }

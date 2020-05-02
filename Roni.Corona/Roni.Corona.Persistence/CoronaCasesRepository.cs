@@ -49,6 +49,10 @@ namespace Roni.Corona.Persistence
         public virtual async Task InsertAsync(IEnumerable<TEntity> entity)
         {
             await _cases.AddRangeAsync(entity);
+        }
+
+        public virtual async Task SaveAsync()
+        {
             await _context.SaveChangesAsync();
         }
     }

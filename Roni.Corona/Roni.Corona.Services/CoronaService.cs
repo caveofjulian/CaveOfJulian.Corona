@@ -96,6 +96,7 @@ namespace Roni.Corona.Services
         {
             var entities =  _mapper.Map<IEnumerable<CaseReport>, IEnumerable<Cases>>(cases);
             await _coronaRepository.InsertAsync(entities);
+            await _coronaRepository.SaveAsync();
         }
     }
 }
