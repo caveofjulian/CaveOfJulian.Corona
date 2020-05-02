@@ -4,7 +4,11 @@ using System.Text;
 
 namespace Roni.Corona.Shared
 {
-    class DeathReport
+    public enum ReportType
     {
+        All,
+        Confirmed,
+        Death,
+        Recovered
     }
 }

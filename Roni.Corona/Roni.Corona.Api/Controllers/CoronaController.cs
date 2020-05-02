@@ -28,12 +28,36 @@ namespace Roni.Corona.Api.Controllers
         [HttpGet]
         public IActionResult Get([FromQuery] CoronaParameters parameters)
         {
+            return GetCases(parameters, ReportType.All);
+        }
+
+        [HttpGet("death")]
+        public IActionResult GetDeathCases([FromQuery] CoronaParameters parameters)
+        {
+            return GetCases(parameters, ReportType.Death);
+        }
+
+        [HttpGet("confirmed")]
+        public IActionResult GetConfirmedCases([FromQuery] CoronaParameters parameters)
+        {
+            return GetCases(parameters, ReportType.Confirmed);
+        }
+
+
+        [HttpGet("recovered")]
+        public IActionResult GetRecoveredCases([FromQuery] CoronaParameters parameters)
+        {
+            return GetCases(parameters, ReportType.Recovered);
+        }
+
+        private IActionResult GetCases(CoronaParameters parameters, ReportType reportType)
+        {
             try
             {
-                return Ok(GetCases(parameters));
+                return Ok(GetCaseReport(parameters, reportType));
             }
             catch (SqlException e)
-            {  
+            {
                 _logger.LogInformation("Sql exception occured.", e);
                 return StatusCode(500, "Database returned an error.");
             }
@@ -44,24 +68,24 @@ namespace Roni.Corona.Api.Controllers
             }
         }
 
-        private IEnumerable<CaseReport> GetCases(CoronaParameters parameters)
+        private IEnumerable<CaseReport> GetCaseReport(CoronaParameters parameters, ReportType reportType)
         {
             // Please stick to a chain of conditions like this so its very explicit. 
             if (parameters.Date == null && parameters.BeginDate == null && parameters.EndDate == null)
             {
-                return _service.GetCases(parameters.Country);
+                return _service.GetCases(reportType, parameters.Country);
             }
             if (parameters.Date != null && parameters.Country != null)
             {
-                return _service.GetCases(parameters.Country, parameters.Date.GetValueOrDefault());
+                return _service.GetCases(reportType, parameters.Country, parameters.Date.GetValueOrDefault());
             }
             if (parameters.BeginDate != null && parameters.EndDate != null && parameters.Country == null)
             {
-                return _service.GetCases(parameters.BeginDate.GetValueOrDefault(), parameters.EndDate.GetValueOrDefault());
+                return _service.GetCases(reportType, parameters.BeginDate.GetValueOrDefault(), parameters.EndDate.GetValueOrDefault());
             }
             if (parameters.BeginDate != null && parameters.EndDate != null && parameters.Country != null)            
             {
-                return _service.GetCases(parameters.Country, parameters.BeginDate.GetValueOrDefault(), parameters.EndDate.GetValueOrDefault());
+                return _service.GetCases(reportType, parameters.Country, parameters.BeginDate.GetValueOrDefault(), parameters.EndDate.GetValueOrDefault());
             }
 
             return null;

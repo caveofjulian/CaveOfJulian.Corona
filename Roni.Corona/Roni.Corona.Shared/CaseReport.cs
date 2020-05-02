@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -10,8 +11,11 @@ namespace Roni.Corona.Shared
         public string Country { get; set; }
         public DateTime Date { get; set; }
         public DateTime LastUpdated { get; set; }
-        public int Confirmed { get; set; }
-        public int Death { get; set; }
-        public int Recovered { get; set; }
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public int? Confirmed { get; set; }
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public int? Death { get; set; }
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public int? Recovered { get; set; }
     }
 }

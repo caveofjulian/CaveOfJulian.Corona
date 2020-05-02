@@ -1,11 +1,13 @@
 ﻿using Roni.Corona.Persistence;
 using Roni.Corona.Shared;
+using Roni.Corona.Services.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Roni.Corona.Persistence.Entities;
 using AutoMapper;
+
 
 namespace Roni.Corona.Services
 {
@@ -29,50 +31,50 @@ namespace Roni.Corona.Services
             return confirmedCases.Any() ? confirmedCases.First().Date : DateTime.MinValue;
         }
 
-        public IEnumerable<CaseReport> GetCases()
+        public IEnumerable<CaseReport> GetCases(ReportType reportType)
         {
             var cases = _coronaRepository.Get();
-            return _mapper.Map<IEnumerable<Cases>, IEnumerable<CaseReport>>(cases);
+            return _mapper.Map<IEnumerable<Cases>, IEnumerable<CaseReport>>(cases).ToReportType(reportType);
         }
 
-        public IEnumerable<CaseReport> GetCases(DateTime date)
+        public IEnumerable<CaseReport> GetCases(ReportType reportType, DateTime date)
         {
             var cases = _coronaRepository.Get()
                 .Where(x => x.Date.Date == date.Date);
 
-            return _mapper.Map<IEnumerable<Cases>, IEnumerable<CaseReport>>(cases);
+            return _mapper.Map<IEnumerable<Cases>, IEnumerable<CaseReport>>(cases).ToReportType(reportType);
         }
 
-        public IEnumerable<CaseReport> GetCases(DateTime beginDate, DateTime endDate)
+        public IEnumerable<CaseReport> GetCases(ReportType reportType, DateTime beginDate, DateTime endDate)
         { 
             var cases = _coronaRepository.Get()
                 .Where(x => x.Date.Date >= beginDate.Date && x.Date.Date <= endDate.Date);
             
-            return _mapper.Map<IEnumerable<Cases>, IEnumerable<CaseReport>>(cases);
+            return _mapper.Map<IEnumerable<Cases>, IEnumerable<CaseReport>>(cases).ToReportType(reportType); ;
         }
 
-        public IEnumerable<CaseReport> GetCases(string country)
+        public IEnumerable<CaseReport> GetCases(ReportType reportType, string country)
         {
             var cases = _coronaRepository.Get()
                 .Where(x => x.Country == country);
             
-            return _mapper.Map<IEnumerable<Cases>, IEnumerable<CaseReport>>(cases);
+            return _mapper.Map<IEnumerable<Cases>, IEnumerable<CaseReport>>(cases).ToReportType(reportType); ;
         }
 
-        public IEnumerable<CaseReport> GetCases(string country, DateTime date)
+        public IEnumerable<CaseReport> GetCases(ReportType reportType, string country, DateTime date)
         {
             var cases= _coronaRepository.Get()
                 .Where(x => x.Country == country && x.Date.Date == date.Date);
             
-            return _mapper.Map<IEnumerable<Cases>, IEnumerable<CaseReport>>(cases);
+            return _mapper.Map<IEnumerable<Cases>, IEnumerable<CaseReport>>(cases).ToReportType(reportType); ;
         }
 
-        public IEnumerable<CaseReport> GetCases(string country, DateTime beginDate, DateTime endDate)
+        public IEnumerable<CaseReport> GetCases(ReportType reportType, string country, DateTime beginDate, DateTime endDate)
         {
             var cases = _coronaRepository.Get()
                 .Where(x => x.Country == country && x.Date.Date >= beginDate.Date && x.Date.Date <= endDate.Date);
             
-            return _mapper.Map<IEnumerable<Cases>, IEnumerable<CaseReport>>(cases);
+            return _mapper.Map<IEnumerable<Cases>, IEnumerable<CaseReport>>(cases).ToReportType(reportType); ;
         }
 
         public int GetTotalConfirmedCases()
@@ -95,6 +97,5 @@ namespace Roni.Corona.Services
             var entities =  _mapper.Map<IEnumerable<CaseReport>, IEnumerable<Cases>>(cases);
             await _coronaRepository.InsertAsync(entities);
         }
-
     }
 }
