@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Roni.Corona.Persistence.Entities
+namespace Roni.Corona.Shared
 {
     public class Cases
     {

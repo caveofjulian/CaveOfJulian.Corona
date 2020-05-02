@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Roni.Corona.Persistence.Entities;
+using Roni.Corona.Shared;
 
 namespace Roni.Corona.Services
 {
@@ -10,8 +10,11 @@ namespace Roni.Corona.Services
         DateTime GetLastUpdated();
         IEnumerable<Cases> GetCases();
         IEnumerable<Cases> GetCases(DateTime date);
+        IEnumerable<Cases> GetCases(DateTime beginDate, DateTime endDate);
         IEnumerable<Cases> GetCases(string country);
         IEnumerable<Cases> GetCases(string country, DateTime date);
+        IEnumerable<Cases> GetCases(string country, DateTime beginDate, DateTime endDate);
+
         int GetTotalConfirmedCases();
         int GetTotalRecoveredCases();
         int GetTotalDeathCases();

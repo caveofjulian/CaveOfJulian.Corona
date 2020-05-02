@@ -1,11 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Roni.Corona.Persistence\Roni.Corona.Persistence.csproj" />
+    <ProjectReference Include="..\Roni.Corona.Shared\Roni.Corona.Shared.csproj" />
   </ItemGroup>
 
 </Project>

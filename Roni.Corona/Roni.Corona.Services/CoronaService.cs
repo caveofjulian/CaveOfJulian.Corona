@@ -1,9 +1,9 @@
 ﻿using Roni.Corona.Persistence;
+using Roni.Corona.Shared;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Roni.Corona.Persistence.Entities;
 
 namespace Roni.Corona.Services
 {
@@ -35,6 +35,11 @@ namespace Roni.Corona.Services
             return _coronaRepository.Get().Where(x => x.Date.Date == date.Date);
         }
 
+        public IEnumerable<Cases> GetCases(DateTime beginDate, DateTime endDate)
+        {
+            return _coronaRepository.Get().Where(x => x.Date.Date >= beginDate.Date && x.Date.Date <= endDate.Date);
+        }
+
         public IEnumerable<Cases> GetCases(string country)
         {
             return _coronaRepository.Get().Where(x => x.Country == country);
@@ -43,6 +48,11 @@ namespace Roni.Corona.Services
         public IEnumerable<Cases> GetCases(string country, DateTime date)
         {
             return _coronaRepository.Get().Where(x => x.Country == country && x.Date.Date == date.Date);
+        }
+
+        public IEnumerable<Cases> GetCases(string country, DateTime beginDate, DateTime endDate)
+        {
+            return _coronaRepository.Get().Where(x => x.Country == country && x.Date.Date >= beginDate.Date && x.Date.Date <= endDate.Date);
         }
 
         public int GetTotalConfirmedCases()
