@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Roni.Corona.Shared;
+using Roni.Corona.Persistence.Entities;
 
 namespace Roni.Corona.Persistence
 {

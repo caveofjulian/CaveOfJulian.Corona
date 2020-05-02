@@ -1,12 +1,11 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
+using System.Text;
 
 namespace Roni.Corona.Shared
 {
-    public class Cases
+    public class CaseReport
     {
-        [Key]
-        public int Id { get; set; }
         public string State { get; set; }
         public string Country { get; set; }
         public DateTime Date { get; set; }

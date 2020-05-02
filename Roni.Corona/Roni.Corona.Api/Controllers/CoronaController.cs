@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
+using Roni.Corona.Persistence.Entities;
 using Roni.Corona.Services;
 using Roni.Corona.Shared;
 
