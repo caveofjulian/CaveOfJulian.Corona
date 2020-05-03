@@ -58,7 +58,7 @@ namespace Roni.Corona.Services
             var cases = _coronaRepository.Get()
                 .Where(x => x.Country == country);
             
-            return _mapper.Map<IEnumerable<Cases>, IEnumerable<CaseReport>>(cases).ToReportType(reportType); ;
+            return _mapper.Map<IEnumerable<Cases>, IEnumerable<CaseReport>>(cases).ToReportType(reportType);
         }
 
         public IEnumerable<CaseReport> GetCases(ReportType reportType, string country, DateTime date)

@@ -32,6 +32,7 @@ namespace Roni.Corona.Services.Extensions
                     break;
             }
 
+            // If type is all it will return the whole report immediately
             return report;
         }
 

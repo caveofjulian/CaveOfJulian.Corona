@@ -15,7 +15,6 @@ namespace Roni.Corona.Services
         IEnumerable<CaseReport> GetCases(ReportType reportType, string country);
         IEnumerable<CaseReport> GetCases(ReportType reportType, string country, DateTime date);
         IEnumerable<CaseReport> GetCases(ReportType reportType, string country, DateTime beginDate, DateTime endDate);
-
         int GetTotalConfirmedCases();
         int GetTotalRecoveredCases();
         int GetTotalDeathCases();
