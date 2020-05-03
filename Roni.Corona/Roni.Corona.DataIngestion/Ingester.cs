@@ -20,10 +20,10 @@ namespace Roni.Corona.DataIngestion
 
 
         // From 22nd of march, the indexes have changed..
-        private DateTime _newDate = new DateTime(2020,3,22);
-        private int[] _oldIndices = { 0,1,2,3,4,5};
-        private int[] _newIndices = { 2,3,4,7,8,9};
-        
+        private DateTime _newDate = new DateTime(2020, 3, 22);
+        private int[] _oldIndices = {0, 1, 2, 3, 4, 5};
+        private int[] _newIndices = {2, 3, 4, 7, 8, 9};
+
         internal Ingester(ICoronaIntegration integration, ICoronaService service, ILogger<Ingester> logger)
         {
             _integration = integration;
@@ -33,61 +33,67 @@ namespace Roni.Corona.DataIngestion
 
         public async Task CheckForUpdates()
         {
-            var lastUpdated = _service.GetLastUpdated();
+            DateTime lastUpdated = _service.GetLastUpdated();
 
             if (lastUpdated.Date < DateTime.Now.Date)
             {
-                var newContent = await _integration.GetNewContent(lastUpdated);
-                
-                foreach (var keyValuePair in newContent)
+                Dictionary<DateTime, string> newContent = await _integration.GetNewContent(lastUpdated);
+
+                foreach (KeyValuePair<DateTime, string> keyValuePair in newContent)
                 {
-                    var cases = MapStringToMultipleCases(keyValuePair.Value, keyValuePair.Key);
+                    IEnumerable<Cases> cases = MapStringToMultipleCases(keyValuePair.Value, keyValuePair.Key);
                     await UpdateAsync(cases);
                     _logger.Log(LogLevel.Information, $"Successfully ingested {keyValuePair.Key}");
                 }
             }
+
             _logger.Log(LogLevel.Information, "Finished ingestion successfully.");
         }
 
         private IEnumerable<Cases> MapStringToMultipleCases(string content, DateTime date)
         {
-            IList<Cases> cases = new List<Cases>();
+            string[] lines = content.Split(Environment.NewLine).Skip(1).ToArray();
 
-            var lines = content.Split(Environment.NewLine).Skip(1).ToArray();
+            IList<Cases> cases = lines.Select(line => date.Date >= _newDate.Date
+                                                  ? MapStringToCases(_newIndices, line, date)
+                                                  : MapStringToCases(_oldIndices, line, date))
+                                      .ToList();
 
-            foreach (var line in lines)
-            {
-                var mappedCases = date.Date >= _newDate.Date
-                    ? MapStringToCases(_newIndices, line, date)
-                    : MapStringToCases(_oldIndices, line, date);
-
-                 cases.Add(mappedCases);    
-            }
-
-            return cases.Where(x => x!=null);
+            return cases.Where(x => x != null);
         }
 
-        private Cases MapStringToCases(int[] indices, string content, DateTime date)
+        private Cases MapStringToCases(IReadOnlyList<int> indices, string content, DateTime date)
         {
             if (string.IsNullOrEmpty(content)) return null;
 
-            var cells = content.Split(",");
+            string[] cells = content.Split(",");
 
-            var confirmed = cells[indices[3]].ParseToInt();
-            var deaths = cells[indices[4]].ParseToInt();
-            var recovered = cells[indices[5]].ParseToInt();
-
-            var isDateParsed = DateTime.TryParseExact(cells[indices[2]], "d/MM/yyyy HH:mm", null,DateTimeStyles.AllowWhiteSpaces, out var lastDate);
+            bool isDateParsed = DateTime.TryParseExact(cells[indices[2]], "d/MM/yyyy HH:mm", null,
+                                                       DateTimeStyles.AllowWhiteSpaces, out DateTime lastDate);
             if (!isDateParsed) lastDate = date;
-            
-            return new Cases()
+
+            if (int.TryParse(cells[indices[0]], out int fips))
+            {
+                return new Cases
+                {
+                    State = cells[indices[2]],
+                    Country = cells[indices[3]],
+                    LastUpdated = DateTime.Parse(cells[indices[4]]),
+                    Confirmed = cells[indices[7]].ParseToInt(),
+                    Death = cells[indices[8]].ParseToInt(),
+                    Recovered = cells[indices[9]].ParseToInt(),
+                    Date = date
+                };
+            }
+
+            return new Cases
             {
                 State = cells[indices[0]],
                 Country = cells[indices[1]],
                 LastUpdated = lastDate,
-                Confirmed = confirmed,
-                Death = deaths,
-                Recovered = recovered,
+                Confirmed = cells[indices[3]].ParseToInt(),
+                Death = cells[indices[4]].ParseToInt(),
+                Recovered = cells[indices[5]].ParseToInt(),
                 Date = date
             };
         }
