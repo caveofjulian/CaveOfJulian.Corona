@@ -9,8 +9,8 @@ namespace Roni.Corona.Persistence
 {
     public class CoronaCasesRepository<TEntity> : ICoronaCasesRepository<TEntity> where TEntity:class
     {
-        private RoniContext _context;
-        private DbSet<TEntity> _cases;
+        private readonly RoniContext _context;
+        private readonly DbSet<TEntity> _cases;
 
         public CoronaCasesRepository(RoniContext context)
         {
@@ -18,12 +18,12 @@ namespace Roni.Corona.Persistence
             _cases = context.Set<TEntity>();
         }
 
-        public virtual IEnumerable<TEntity> Get(string query, params object[] parameters)
+        public virtual IQueryable<TEntity> Get(string query, params object[] parameters)
         {
             return _cases.FromSqlRaw(query, parameters);
         }
 
-        public virtual IEnumerable<TEntity> Get(Expression<Func<TEntity, bool>> filter = null,
+        public virtual IQueryable<TEntity> Get(Expression<Func<TEntity, bool>> filter = null,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null)
         {
             IQueryable<TEntity> query = _cases;
@@ -36,7 +36,7 @@ namespace Roni.Corona.Persistence
             return orderBy != null ? orderBy(query) : query;
         }
 
-        public virtual IEnumerable<TEntity> Get()
+        public virtual IQueryable<TEntity> Get()
         {
             return _cases;
         }
@@ -49,6 +49,10 @@ namespace Roni.Corona.Persistence
         public virtual async Task InsertAsync(IEnumerable<TEntity> entity)
         {
             await _cases.AddRangeAsync(entity);
+        }
+
+        public virtual async Task SaveAsync()
+        {
             await _context.SaveChangesAsync();
         }
     }

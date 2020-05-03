@@ -1,10 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Roni.Corona.Persistence.Entities;
+using Roni.Corona.Shared;
 
 namespace Roni.Corona.Persistence
 {
-    public static class ServicesConfiguration
+    public static class PersistenceConfiguration
     {
         public static void ConfigurePersistenceServices(this IServiceCollection collection, string connectionString)
         {

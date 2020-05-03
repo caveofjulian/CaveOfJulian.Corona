@@ -8,13 +8,14 @@ namespace Roni.Corona.Persistence
 {
     public interface ICoronaCasesRepository<TEntity> where TEntity : class
     {
-        IEnumerable<TEntity> Get();
-        IEnumerable<TEntity> Get(string query, params object[] parameters);
+        IQueryable<TEntity> Get();
+        IQueryable<TEntity> Get(string query, params object[] parameters);
 
-        IEnumerable<TEntity> Get(Expression<Func<TEntity, bool>> filter = null,
+        IQueryable<TEntity> Get(Expression<Func<TEntity, bool>> filter = null,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null);
 
         void Insert(IEnumerable<TEntity> entity);
         Task InsertAsync(IEnumerable<TEntity> entity);
+        Task SaveAsync();
     }
 }
