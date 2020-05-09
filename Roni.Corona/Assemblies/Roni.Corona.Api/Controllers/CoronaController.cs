@@ -54,7 +54,7 @@ namespace Roni.Corona.Api.Controllers
         {
             try
             {
-                return Ok(GetCaseReport(parameters, reportType));
+                return Ok(_service.GetCases(parameters, reportType));
             }
             catch (SqlException e)
             {
@@ -68,27 +68,5 @@ namespace Roni.Corona.Api.Controllers
             }
         }
 
-        private IEnumerable<CaseReport> GetCaseReport(CoronaParameters parameters, ReportType reportType)
-        {
-            // Please stick to a chain of conditions like this so its very explicit. 
-            if (parameters.Date == null && parameters.BeginDate == null && parameters.EndDate == null)
-            {
-                return _service.GetCases(reportType, parameters.Country);
-            }
-            if (parameters.Date != null && parameters.Country != null)
-            {
-                return _service.GetCases(reportType, parameters.Country, parameters.Date.GetValueOrDefault());
-            }
-            if (parameters.BeginDate != null && parameters.EndDate != null && parameters.Country == null)
-            {
-                return _service.GetCases(reportType, parameters.BeginDate.GetValueOrDefault(), parameters.EndDate.GetValueOrDefault());
-            }
-            if (parameters.BeginDate != null && parameters.EndDate != null && parameters.Country != null)            
-            {
-                return _service.GetCases(reportType, parameters.Country, parameters.BeginDate.GetValueOrDefault(), parameters.EndDate.GetValueOrDefault());
-            }
-
-            return null;
-        }
     }
 }

@@ -21,7 +21,7 @@ namespace Roni.Corona.Api.UnitTests
 
             var service = new Mock<ICoronaService>();
             service
-                .Setup(x => x.GetCases(It.IsAny<ReportType>(), It.IsAny<string>()))
+                .Setup(x => x.GetCases(It.IsAny<CoronaParameters>(), It.IsAny<ReportType>()))
                 .Returns(expectedReports);
 
             var controller = new CoronaController(service.Object, It.IsAny<ILogger>());
@@ -49,8 +49,7 @@ namespace Roni.Corona.Api.UnitTests
 
             var service = new Mock<ICoronaService>();
             service
-                .Setup(x => x.GetCases(It.IsAny<ReportType>(), 
-                    It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<DateTime>()))
+                .Setup(x => x.GetCases(It.IsAny<CoronaParameters>(), It.IsAny<ReportType>()))
                 .Returns(expectedReports);
 
             var controller = new CoronaController(service.Object, It.IsAny<ILogger>());
@@ -79,8 +78,7 @@ namespace Roni.Corona.Api.UnitTests
 
             var service = new Mock<ICoronaService>();
             service
-                .Setup(x => x.GetCases(It.IsAny<ReportType>(),
-                    It.IsAny<string>(), It.IsAny<DateTime>()))
+                .Setup(x => x.GetCases(It.IsAny<CoronaParameters>(), It.IsAny<ReportType>()))
                 .Returns(expectedReports);
 
             var controller = new CoronaController(service.Object, It.IsAny<ILogger>());
@@ -108,7 +106,7 @@ namespace Roni.Corona.Api.UnitTests
 
             var service = new Mock<ICoronaService>();
             service
-                .Setup(x => x.GetCases(It.IsAny<ReportType>(), It.IsAny<string>()))
+                .Setup(x => x.GetCases(It.IsAny<CoronaParameters>(), It.IsAny<ReportType>()))
                 .Returns(expectedReports);
 
             var controller = new CoronaController(service.Object, It.IsAny<ILogger>());
@@ -132,7 +130,7 @@ namespace Roni.Corona.Api.UnitTests
 
             var service = new Mock<ICoronaService>();
             service
-                .Setup(x => x.GetCases(It.IsAny<ReportType>(), It.IsAny<string>()))
+                .Setup(x => x.GetCases(It.IsAny<CoronaParameters>(), It.IsAny<ReportType>()))
                 .Returns(expectedReports);
 
             var controller = new CoronaController(service.Object, It.IsAny<ILogger>());
@@ -159,7 +157,7 @@ namespace Roni.Corona.Api.UnitTests
 
             var service = new Mock<ICoronaService>();
             service
-                .Setup(x => x.GetCases(It.IsAny<ReportType>(), It.IsAny<string>()))
+                .Setup(x => x.GetCases(It.IsAny<CoronaParameters>(), It.IsAny<ReportType>()))
                 .Returns(expectedReports);
 
             var controller = new CoronaController(service.Object, It.IsAny<ILogger>());

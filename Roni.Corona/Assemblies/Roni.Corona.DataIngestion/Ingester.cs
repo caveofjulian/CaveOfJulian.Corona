@@ -15,14 +15,11 @@ namespace Roni.Corona.DataIngestion
         private readonly ICoronaIntegration _integration;
         private readonly ICoronaService _service;
         private readonly ILogger<Ingester> _logger;
-
-        private int _intervalInMinutes = 60;
-
-
+        
         // From 22nd of march, the indexes have changed..
-        private DateTime _newDate = new DateTime(2020, 3, 22);
-        private int[] _oldIndices = {0, 1, 2, 3, 4, 5};
-        private int[] _newIndices = {2, 3, 4, 7, 8, 9};
+        private readonly DateTime _newDate = new DateTime(2020, 3, 22);
+        private readonly int[] _oldIndices = {0, 1, 2, 3, 4, 5};
+        private readonly int[] _newIndices = {2, 3, 4, 7, 8, 9};
 
         internal Ingester(ICoronaIntegration integration, ICoronaService service, ILogger<Ingester> logger)
         {
@@ -33,16 +30,16 @@ namespace Roni.Corona.DataIngestion
 
         public async Task CheckForUpdates()
         {
-            DateTime lastUpdated = _service.GetLastUpdated();
+            var lastUpdated = _service.GetLastUpdated();
 
             if (lastUpdated.Date < DateTime.Now.Date)
             {
-                Dictionary<DateTime, string> newContent = await _integration.GetNewContent(lastUpdated);
+                var newContent = await _integration.GetNewContent(lastUpdated);
 
-                foreach (KeyValuePair<DateTime, string> keyValuePair in newContent)
+                foreach (var keyValuePair in newContent)
                 {
-                    IEnumerable<Cases> cases = MapStringToMultipleCases(keyValuePair.Value, keyValuePair.Key);
-                    await UpdateAsync(cases);
+                    var cases = MapStringToMultipleCases(keyValuePair.Value, keyValuePair.Key);
+                    await InsertAsync(cases);
                     _logger.Log(LogLevel.Information, $"Successfully ingested {keyValuePair.Key}");
                 }
             }
@@ -52,7 +49,7 @@ namespace Roni.Corona.DataIngestion
 
         private IEnumerable<Cases> MapStringToMultipleCases(string content, DateTime date)
         {
-            string[] lines = content.Split(Environment.NewLine).Skip(1).ToArray();
+            var lines = content.Split(Environment.NewLine).Skip(1).ToArray();
 
             IList<Cases> cases = lines.Select(line => date.Date >= _newDate.Date
                                                   ? MapStringToCases(_newIndices, line, date)
@@ -66,13 +63,13 @@ namespace Roni.Corona.DataIngestion
         {
             if (string.IsNullOrEmpty(content)) return null;
 
-            string[] cells = content.Split(",");
+            var cells = content.Split(",");
 
-            bool isDateParsed = DateTime.TryParseExact(cells[indices[2]], "d/MM/yyyy HH:mm", null,
-                                                       DateTimeStyles.AllowWhiteSpaces, out DateTime lastDate);
+            var isDateParsed = DateTime.TryParseExact(cells[indices[2]], "d/MM/yyyy HH:mm", null,
+                                                       DateTimeStyles.AllowWhiteSpaces, out var lastDate);
             if (!isDateParsed) lastDate = date;
 
-            if (int.TryParse(cells[indices[0]], out int fips))
+            if (int.TryParse(cells[indices[0]], out var fips))
             {
                 return new Cases
                 {
@@ -98,7 +95,7 @@ namespace Roni.Corona.DataIngestion
             };
         }
 
-        private async Task UpdateAsync(IEnumerable<Cases> data)
+        private async Task InsertAsync(IEnumerable<Cases> data)
         {
             await _service.InsertAsync(data);
         }

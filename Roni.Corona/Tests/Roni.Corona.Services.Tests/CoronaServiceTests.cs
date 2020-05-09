@@ -73,8 +73,10 @@ namespace Roni.Corona.Services.Tests
 
             var service = new CoronaService(repository.Object, new Mapper(config));
 
+            var coronaParameters = new CoronaParameters();
+
             // Act
-            var actualData = service.GetCases(ReportType.All);
+            var actualData = service.GetCases(coronaParameters, ReportType.All);
 
             // Assert
             actualData.Should().BeEquivalentTo(expectedData);
@@ -106,9 +108,11 @@ namespace Roni.Corona.Services.Tests
             var config = new MapperConfiguration(config => config.CreateMap<Cases, CaseReport>());
 
             var service = new CoronaService(repository.Object, new Mapper(config));
-            
+
+            var coronaParameters = new CoronaParameters();
+
             // Act
-            var actualData = service.GetCases(ReportType.Death);
+            var actualData = service.GetCases(coronaParameters, ReportType.Death);
 
             // Assert
             actualData.Should().BeEquivalentTo(expectedData);
@@ -141,8 +145,10 @@ namespace Roni.Corona.Services.Tests
 
             var service = new CoronaService(repository.Object, new Mapper(config));
 
+            var coronaParameters = new CoronaParameters();
+
             // Act
-            var actualData = service.GetCases(ReportType.Confirmed);
+            var actualData = service.GetCases(coronaParameters, ReportType.Confirmed);
 
             // Assert
             actualData.Should().BeEquivalentTo(expectedData);
@@ -175,8 +181,10 @@ namespace Roni.Corona.Services.Tests
 
             var service = new CoronaService(repository.Object, new Mapper(config));
 
+            var coronaParameters = new CoronaParameters();
+
             // Act
-            var actualData = service.GetCases(ReportType.Recovered);
+            var actualData = service.GetCases(coronaParameters, ReportType.Recovered);
 
             // Assert
             actualData.Should().BeEquivalentTo(expectedData);
@@ -210,8 +218,13 @@ namespace Roni.Corona.Services.Tests
 
             var service = new CoronaService(repository.Object, new Mapper(config));
 
+            var coronaParameters = new CoronaParameters()
+            {
+                Date = new DateTime(2020, 12, 5)
+            };
+
             // Act
-            var actualData = service.GetCases(ReportType.Death, new DateTime(2020, 12, 5));
+            var actualData = service.GetCases(coronaParameters, ReportType.Death);
 
             // Assert
             actualData.Should().BeEquivalentTo(expectedData);
@@ -245,9 +258,14 @@ namespace Roni.Corona.Services.Tests
 
             var service = new CoronaService(repository.Object, new Mapper(config));
 
+            var coronaParameters = new CoronaParameters()
+            {
+                BeginDate = new DateTime(2020, 12, 5),
+                EndDate = new DateTime(2020, 12, 7)
+            };
+
             // Act
-            var actualData = service.GetCases(ReportType.Confirmed, new DateTime(2020, 12, 5),
-                new DateTime(2020, 12, 7));
+            var actualData = service.GetCases(coronaParameters, ReportType.Confirmed);
 
             // Assert
             actualData.Should().BeEquivalentTo(expectedData);
@@ -282,8 +300,13 @@ namespace Roni.Corona.Services.Tests
 
             var service = new CoronaService(repository.Object, new Mapper(config));
 
+            var coronaParameters = new CoronaParameters()
+            {
+                Country = "UK",
+            };
+
             // Act
-            var actualData = service.GetCases(ReportType.Recovered, "UK");
+            var actualData = service.GetCases(coronaParameters, ReportType.Recovered);
 
             // Assert
             actualData.Should().BeEquivalentTo(expectedData);
@@ -316,9 +339,14 @@ namespace Roni.Corona.Services.Tests
             var config = new MapperConfiguration(config => config.CreateMap<Cases, CaseReport>());
 
             var service = new CoronaService(repository.Object, new Mapper(config));
-
+            
+            var coronaParameters = new CoronaParameters()
+            {
+                Country = "UK",
+                Date = new DateTime(2020, 12, 5)
+            };
             // Act
-            var actualData = service.GetCases(ReportType.All, "UK", new DateTime(2020, 12, 5));
+            var actualData = service.GetCases(coronaParameters, ReportType.All);
 
             // Assert
             actualData.Should().BeEquivalentTo(expectedData);
@@ -352,9 +380,15 @@ namespace Roni.Corona.Services.Tests
 
             var service = new CoronaService(repository.Object, new Mapper(config));
 
+            var coronaParameters = new CoronaParameters()
+            {
+                Country ="UK",
+                BeginDate = new DateTime(2020, 12, 5),
+                EndDate = new DateTime(2020, 12, 7)
+            };
+
             // Act
-            var actualData = service.GetCases(ReportType.All, "UK", new DateTime(2020, 12, 5), 
-                new DateTime(2020,12,7));
+            var actualData = service.GetCases(coronaParameters, ReportType.All);
 
             // Assert
             actualData.Should().BeEquivalentTo(expectedData);

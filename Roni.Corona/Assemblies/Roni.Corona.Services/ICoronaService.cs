@@ -9,15 +9,10 @@ namespace Roni.Corona.Services
     public interface ICoronaService
     {
         DateTime GetLastUpdated();
-        IEnumerable<CaseReport> GetCases(ReportType reportType);
-        IEnumerable<CaseReport> GetCases(ReportType reportType, DateTime date);
-        IEnumerable<CaseReport> GetCases(ReportType reportType, DateTime beginDate, DateTime endDate);
-        IEnumerable<CaseReport> GetCases(ReportType reportType, string country);
-        IEnumerable<CaseReport> GetCases(ReportType reportType, string country, DateTime date);
-        IEnumerable<CaseReport> GetCases(ReportType reportType, string country, DateTime beginDate, DateTime endDate);
+        IEnumerable<CaseReport> GetCases(CoronaParameters parameters, ReportType reportType);
         int GetTotalConfirmedCases();
         int GetTotalRecoveredCases();
         int GetTotalDeathCases();
-        Task InsertAsync(IEnumerable<CaseReport> cases);
+        Task InsertAsync(IEnumerable<Cases> cases);
     }
 }
