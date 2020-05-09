@@ -39,7 +39,7 @@ namespace Roni.Corona.Services
                     .Where(x => parameters.BeginDate == default && parameters.EndDate == default ||
                                 (x.Date >= parameters.BeginDate && x.Date <= parameters.EndDate));
 
-            return _mapper.Map<IEnumerable<Cases>, IEnumerable<CaseReport>>(cases).ToReportType(reportType);
+            return _mapper.Map<IEnumerable<CaseReport>>(cases).ToReportType(reportType);
         }
         
         public int GetTotalConfirmedCases()
