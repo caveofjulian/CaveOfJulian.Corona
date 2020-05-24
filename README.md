@@ -1,6 +1,6 @@
-# Roni.Corona
+# Corona.Api
 
-Roni.Corona is split into two parts: data ingestion (web scraping) and an ASP Web Api. 
+Corona.Api is split into two parts: data ingestion (web scraping) and an ASP Web Api. 
 
 The data ingestion project is responsible for scraping the new data about corona from [a Github repository.](https://github.com/CSSEGISandData/COVID-19/)
 
