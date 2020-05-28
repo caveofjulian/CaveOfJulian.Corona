@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Roni.Corona.DataIngestion.Integrations;
@@ -32,7 +33,7 @@ namespace Roni.Corona.DataIngestion
         {
             var lastUpdated = _service.GetLastUpdated();
 
-            if (lastUpdated.Date < DateTime.Now.Date)
+            if (lastUpdated.Date <= DateTime.Now.Date)
             {
                 var newContent = await _integration.GetNewContent(lastUpdated);
 
@@ -40,7 +41,7 @@ namespace Roni.Corona.DataIngestion
                 {
                     var cases = MapStringToMultipleCases(keyValuePair.Value, keyValuePair.Key);
                     await InsertAsync(cases);
-                    _logger.Log(LogLevel.Information, $"Successfully ingested {keyValuePair.Key}");
+                     _logger.Log(LogLevel.Information, $"Successfully ingested {keyValuePair.Key}");
                 }
             }
 
@@ -49,7 +50,7 @@ namespace Roni.Corona.DataIngestion
 
         private IEnumerable<Cases> MapStringToMultipleCases(string content, DateTime date)
         {
-            var lines = content.Split(Environment.NewLine).Skip(1).ToArray();
+            var lines = content.Split("\n").Skip(1).ToArray();
 
             IList<Cases> cases = lines.Select(line => date.Date >= _newDate.Date
                                                   ? MapStringToCases(_newIndices, line, date)
@@ -63,7 +64,7 @@ namespace Roni.Corona.DataIngestion
         {
             if (string.IsNullOrEmpty(content)) return null;
 
-            var cells = content.Split(",");
+            var cells = SplitWithDoubleQuotes(',',content);
 
             var isDateParsed = DateTime.TryParseExact(cells[indices[2]], "d/MM/yyyy HH:mm", null,
                                                        DateTimeStyles.AllowWhiteSpaces, out var lastDate);
@@ -93,6 +94,38 @@ namespace Roni.Corona.DataIngestion
                 Recovered = cells[indices[5]].ParseToInt(),
                 Date = date
             };
+        }
+
+        private static string[] SplitWithDoubleQuotes(char delimiter, string line)
+        {
+            var result = new List<string>();
+            var builder = new StringBuilder("");
+
+            var inQuotes = false;
+
+            foreach (var part in line)
+            {
+                if (part == '\"')
+                {
+                    inQuotes = !inQuotes;
+                }
+                else if (part == delimiter) 
+                {
+                    if (!inQuotes) 
+                    {
+                        result.Add(builder.ToString());
+                        builder.Clear();
+                    }
+                    else
+                        builder.Append(part); 
+                }
+                else
+                {
+                    builder.Append(part);
+                }
+            }
+            result.Add(builder.ToString());
+            return result.ToArray(); 
         }
 
         private async Task InsertAsync(IEnumerable<Cases> data)
