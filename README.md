@@ -1,6 +1,9 @@
-# Corona.Api
+# CaveOfJulian.Corona
 
-Corona.Api is split into two parts: data ingestion (web scraping) and an ASP Web Api. 
+CaveOfJulian.Corona is split into three  parts.
+The Corona data is gathered through web scraping in Corona.DataIngestion and analyzed with machine learning in the Corona.MachineLearning project.
+
+The endpoints are exposed through an ASP Web Api in Corona.Api. 
 
 The data ingestion project is responsible for scraping the new data about corona from [a Github repository.](https://github.com/CSSEGISandData/COVID-19/)
 
