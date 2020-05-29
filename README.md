@@ -11,7 +11,7 @@ The Web Api is able to create reports on demand about this data.
 
 ## Possible Improvements
 I'm very aware that the data repository returns IQueryable which makes the rest of the project tightly coupled to Entity Framework. 
-I decided to keep it like this as it's not an issue at all currently. Feel free to fix this in a pull request. 
+I decided to keep it like this as it's not an issue at all currently (we're talking about a relatively small and hopefully temporary project). Feel free to fix this in a pull request. 
 
 ## Installation
 
